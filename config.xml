@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<module>
+    <name>yowpayment</name>
+    <displayName><![CDATA[YowPay - SEPA Instant Transfer]]></displayName>
+    <version><![CDATA[1.0.1]]></version>
+    <description><![CDATA[YowPay Payment Gateway Plug-in for PrestaShop]]></description>
+    <author><![CDATA[YowPay]]></author>
+    <tab><![CDATA[payments_gateways]]></tab>
+	<confirmUninstall><![CDATA[Are you sure you want to uninstall?]]></confirmUninstall>
+    <is_configurable>1</is_configurable>
+    <need_instance>1</need_instance>
+</module>

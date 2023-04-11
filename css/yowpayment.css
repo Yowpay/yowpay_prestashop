@@ -1,0 +1,12 @@
+.success-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+.success-details a.btn-primary {
+    min-width: 220px;
+    display: inline-block;
+    text-align: center;
+}

@@ -1,0 +1,9 @@
+services:
+  yow_transactions.api.service:
+    class: YowPayment\Services\Api\ApiService
+    public: true
+  yow_transactions_service:
+    class: YowPayment\Services\YowTransaction\YowTransactionService
+    public: true
+    arguments:
+      - '@service_container'

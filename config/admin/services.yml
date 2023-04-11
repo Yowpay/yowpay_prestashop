@@ -1,0 +1,4 @@
+services:
+  yow_transactions.api.service:
+    class: YowPayment\Services\Api\ApiService
+    public: true

@@ -1,0 +1,17 @@
+{
+  "name": "yowpayment/yowpayment",
+  "description": "YOW Payment Gateway Plug-in for PrestaShop",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Yow Pay",
+      "email": "support@yowpay.com"
+    }
+  ],
+  "autoload": {
+    "psr-4": {
+      "YowPayment\\": "src"
+    }
+  }
+}
