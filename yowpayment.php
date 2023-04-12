@@ -22,6 +22,8 @@ class YowPayment extends PaymentModule
     {
         global $kernel;//Try to get global kernel
 
+        $this->module_key = '69043e926f5867f43aa03604b9dfb670';
+
         $this->name = 'yowpayment';
         $this->tab = 'payments_gateways';
         $this->version = '1.0.2';
