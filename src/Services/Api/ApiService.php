@@ -1,12 +1,31 @@
 <?php
+/**
+ * MIT License
+ * Copyright (c) 2023 Yowpay - Peer to Peer SEPA Payments made easy
 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * @author   YowPay SARL
+ * @copyright  YowPay SARL
+ * @license  MIT License
+ */
 namespace YowPayment\Services\Api;
-
-
-use Configuration;
-use Context;
-use Exception;
-use PrestaShopLogger;
 
 class ApiService
 {
@@ -19,6 +38,7 @@ class ApiService
     /**
      * @param string $endpoint
      * @param array $data
+     *
      * @return array|null
      */
     public function doRequest($endpoint, array $data)
@@ -30,18 +50,19 @@ class ApiService
             return null;
         }
 
-        $appToken = Configuration::get('CHEQUE_APP_TOKEN');
+        $appToken = \Configuration::get('CHEQUE_APP_TOKEN');
 
         if (!$appToken) {
-            PrestaShopLogger::addLog("Missing apiToken in config");
+            \PrestaShopLogger::addLog('Missing apiToken in config');
+
             return null;
         }
 
         $headers = [
-            "X-App-Access-Ts: " . $data['timestamp'],
-            "X-App-Token: " . Configuration::get('CHEQUE_APP_TOKEN'),
+            'X-App-Access-Ts: ' . $data['timestamp'],
+            'X-App-Token: ' . \Configuration::get('CHEQUE_APP_TOKEN'),
             "X-App-Access-Sig: $hashedParams",
-            "Content-Type: application/json"
+            'Content-Type: application/json',
         ];
 
         $postParams = json_encode($data);
@@ -71,8 +92,10 @@ class ApiService
 
     /**
      * @param int $orderId
+     *
      * @return array
-     * @throws Exception
+     *
+     * @throws \Exception
      */
     public function createTransaction($orderId)
     {
@@ -80,20 +103,20 @@ class ApiService
         $attempt = 1;
 
         do {
-            PrestaShopLogger::addLog("Trying to send transaction request for $attempt time");
+            \PrestaShopLogger::addLog("Trying to send transaction request for $attempt time");
             try {
                 $transactionData = [
-                    'amount' => (float) Context::getContext()->cart->getOrderTotal(),
-                    'currency' => Context::getContext()->currency->iso_code,
+                    'amount' => (float) \Context::getContext()->cart->getOrderTotal(),
+                    'currency' => \Context::getContext()->currency->iso_code,
                     'timestamp' => time(),
                     'orderId' => $orderId,
-                    'language' => 'en'
+                    'language' => 'en',
                 ];
-            }catch (Exception $exception) {
-                PrestaShopLogger::addLog("Exception during getOrderTotal: " . $exception->getMessage());
+            } catch (\Exception $exception) {
+                \PrestaShopLogger::addLog('Exception during getOrderTotal: ' . $exception->getMessage());
             }
-            $attempt++;
-        } while(empty($transactionData) && $attempt <= 3);
+            ++$attempt;
+        } while (empty($transactionData) && $attempt <= 3);
 
         if (empty($transactionData)) {
             return [];
@@ -104,6 +127,7 @@ class ApiService
 
     /**
      * @param array $details
+     *
      * @return array|null
      */
     public function getBankData(array $details)
@@ -113,7 +137,7 @@ class ApiService
         $response = $this->doRequest($endpoint, $details);
 
         if (!isset($response['content'])) {
-            PrestaShopLogger::addLog("API responded an error " . json_encode($response));
+            \PrestaShopLogger::addLog('API responded an error ' . json_encode($response));
 
             return null;
         }
@@ -123,6 +147,7 @@ class ApiService
 
     /**
      * @param array $configDetails
+     *
      * @return bool
      */
     public function setPaymentConfigLinks(array $configDetails)
@@ -135,21 +160,23 @@ class ApiService
             return true;
         }
 
-        PrestaShopLogger::addLog("API responded " . $response['http_code'] . " status");
+        \PrestaShopLogger::addLog('API responded ' . $response['http_code'] . ' status');
 
         return false;
     }
 
     /**
      * @param array $postParams
+     *
      * @return string
      */
     private function createHash(array $postParams)
     {
-        $appSecret = Configuration::get('CHEQUE_APP_SECRET');
+        $appSecret = \Configuration::get('CHEQUE_APP_SECRET');
 
         if (!$appSecret) {
-            PrestaShopLogger::addLog("Missing appSecret in config");
+            \PrestaShopLogger::addLog('Missing appSecret in config');
+
             return null;
         }
 

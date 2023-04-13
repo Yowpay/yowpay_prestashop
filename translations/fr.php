@@ -1,7 +1,7 @@
 <?php
 
 global $_MODULE;
-$_MODULE = array();
+$_MODULE = [];
 $_MODULE['<{yowpayment}prestashop>yowpayment_258e33e307c5ebc1891ea12a5dcb5242'] = 'YowPay - SEPA Instant Transfer	';
 $_MODULE['<{yowpayment}prestashop>yowpayment_a101eb06d264c1ad97ff2f8ecfeb9056'] = 'Module de passerelle de paiement YowPay pour Prestashop';
 $_MODULE['<{yowpayment}prestashop>yowpayment_876f23178c29dc2552c0b48bf23cd9bd'] = 'êtes vous sur de bien vouloir désinstaller ?';

@@ -1,0 +1,129 @@
+.card {
+    text-align: center;
+}
+
+.card-text {
+    text-align: center;
+}
+
+.col-sm-4 {
+    position: relative;
+}
+
+.arrow-wrapper {
+    position: absolute;
+    top: 10%;
+    left: 80%;
+}
+
+.arrow {
+    position: absolute;
+    top: 50%;
+    width: 30px;
+    height: 30px;
+    background-color: #ffffff;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1;
+}
+
+.arrow:before {
+    content: "";
+    border-top: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    width: 10px;
+    height: 10px;
+    transform: rotate(45deg);
+}
+
+.yowpay-text {
+    font-size: 14px;
+    min-height: 60px;
+}
+
+.plugin-title {
+    display: flex;
+    align-items: center;
+}
+
+.form-group div#payment-explanation {
+    max-width: 600px;
+    margin-left: 80px;
+}
+
+#payment-explanation .card {
+    border: none;
+    box-shadow: none;
+}
+
+#payment-explanation div.row div.col-sm-4 {
+    padding-right: unset;
+    padding-left: unset;
+}
+
+#payment-explanation .row {
+    display: flex;
+    justify-content: center;
+}
+
+.payment-option label {
+    text-align: left;
+}
+
+body#checkout .additional-information {
+    margin-left: unset;
+    margin-top: unset;
+}
+
+.app-secret-field {
+    -webkit-text-security: disc;
+}
+
+.account-information {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    justify-content: center;
+    gap: 20px;
+}
+
+.account-detail-text {
+    font-weight: bold;
+}
+
+.account-detail-sub-text {
+    color: #959595;
+    margin-bottom: 1px !important;
+    margin-top: 0 !important;
+}
+
+.account-status-connected {
+    color: #1aca2d;
+    font-weight: bold;
+}
+
+.account-status-not-connected {
+    color: red;
+    font-weight: bold;
+}
+
+.account-columns label {
+    display: block;
+    text-align: right;
+}
+
+.account-rows p {
+    padding-top: 7px;
+    padding-right: 25px;
+}
+
+.account-rows p.account-detail-sub-text {
+    padding: 0;
+}
+
+.bootstrap .btn.btn-primary {
+    background-color: #2eacce;
+}
+

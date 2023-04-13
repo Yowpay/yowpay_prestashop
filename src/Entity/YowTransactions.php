@@ -1,20 +1,38 @@
 <?php
+/**
+ * MIT License
+ * Copyright (c) 2023 Yowpay - Peer to Peer SEPA Payments made easy
 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * @author   YowPay SARL
+ * @copyright  YowPay SARL
+ * @license  MIT License
+ */
 namespace YowPayment\Entity;
-
-use DateTime;
-use Db;
-use DbQuery;
-use ObjectModel;
-use PrestaShopDatabaseException;
-use PrestaShopLogger;
 
 /**
  * class YowTransactions for our transactions entity
  *
  * all snake_case variable used, because of property name and table column name must match
  */
-class YowTransactions extends ObjectModel
+class YowTransactions extends \ObjectModel
 {
     /** @var int Transaction id in table */
     public $id;
@@ -37,7 +55,7 @@ class YowTransactions extends ObjectModel
     /** @var string YowPay transaction sender Iban */
     public $sender_iban;
 
-    /** @var string YowPay transaction sender Swift*/
+    /** @var string YowPay transaction sender Swift */
     public $sender_swift;
 
     /** @var string YowPay Bank account holder */
@@ -77,6 +95,7 @@ class YowTransactions extends ObjectModel
                 if (is_array($value)) {
                     return $this->dateRangeFilter($column, $value);
                 }
+
                 return $column . ' = "' . $value . '"';
             }, array_keys($criteria), $criteria));
         }
@@ -85,16 +104,17 @@ class YowTransactions extends ObjectModel
             return $column . ' ' . $order;
         }, array_keys($sortBy), $sortBy));
 
-        $query = new DbQuery();
+        $query = new \DbQuery();
         $query->select('*');
         $query->from('yow_transactions');
         $query->where($where);
         $query->orderBy($orderByClause);
 
         try {
-            $yowTransactions = Db::getInstance()->executeS($query);
-        }catch (PrestaShopDatabaseException $exception) {
-            PrestaShopLogger::addLog("Failed to load transactions from DB");
+            $yowTransactions = \Db::getInstance()->executeS($query);
+        } catch (\PrestaShopDatabaseException $exception) {
+            \PrestaShopLogger::addLog('Failed to load transactions from DB');
+
             return [];
         }
 
@@ -112,6 +132,6 @@ class YowTransactions extends ObjectModel
             $dateFilter[] = $column . " <= '" . $dateRange['to'] . " 23:59:59'";
         }
 
-        return implode(" AND ", $dateFilter);
+        return implode(' AND ', $dateFilter);
     }
 }

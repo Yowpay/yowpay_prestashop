@@ -1,5 +1,32 @@
+{**
+ * MIT License
+ * Copyright (c) 2023 Yowpay - Peer to Peer SEPA Payments made easy
+
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * @author   YowPay SARL
+ * @copyright  YowPay SARL
+ * @license  MIT License
+ *}
+
 {literal}
-    <link rel="stylesheet" href="../modules/yowpayment/css/style.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="../modules/yowpayment/views/css/style.css" type="text/css" media="all"/>
 {/literal}
 
 {extends file="page.tpl"}
@@ -10,7 +37,7 @@
         <div class="row">
             <div class="success-container">
                 <div class="success-header">
-                    <img src="../modules/yowpayment/img/plugin-logo-txt-only.png"
+                    <img src="../modules/yowpayment/views/img/plugin-logo-txt-only.png"
                          class="card-img-top"
                          alt="..."
                          height="80"

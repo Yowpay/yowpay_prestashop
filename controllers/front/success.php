@@ -1,9 +1,35 @@
 <?php
+/**
+ * MIT License
+ * Copyright (c) 2023 Yowpay - Peer to Peer SEPA Payments made easy
 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * @author   YowPay SARL
+ * @copyright  YowPay SARL
+ * @license  MIT License
+ */
 class YowPaymentSuccessModuleFrontController extends ModuleFrontController
 {
     /**
      * @return void
+     *
      * @throws PrestaShopException
      */
     public function initContent()
@@ -16,17 +42,17 @@ class YowPaymentSuccessModuleFrontController extends ModuleFrontController
 
         $customer = new Customer($cart->id_customer);
 
-        PrestaShopLogger::addLog("We got the success link for the transaction " . $this->module->currentOrder);
-        $this->registerStylesheet('module-yowpayment-style', 'modules/' . $this->module->name . '/css/yowpayment.css');
+        PrestaShopLogger::addLog('We got the success link for the transaction ' . $this->module->currentOrder);
+        $this->registerStylesheet('module-yowpayment-style', 'modules/' . $this->module->name . '/views/css/yowpayment.css');
 
         $orderListUrl = $this->context->link->getPageLink('order-confirmation', null, $this->context->language->id, 'id_module=' . $this->module->id . '&id_order=' . $this->context->cookie->lastOrderId . '&key=' . $customer->secure_key);
 
         $this->context->smarty->assign([
             'continueShoppingUrl' => '/',
-            'orderListUrl' => $orderListUrl
+            'orderListUrl' => $orderListUrl,
         ]);
 
-        $this->setTemplate("module:yowpayment/views/templates/front/success.tpl");
+        $this->setTemplate('module:yowpayment/views/templates/front/success.tpl');
     }
 
     /**
@@ -35,6 +61,6 @@ class YowPaymentSuccessModuleFrontController extends ModuleFrontController
     public function setMedia()
     {
         parent::setMedia();
-        $this->registerStylesheet('module-yowpayment-style', 'modules/' . $this->module->name . '/css/yowpayment.css');
+        $this->registerStylesheet('module-yowpayment-style', 'modules/' . $this->module->name . '/views/css/yowpayment.css');
     }
 }

@@ -1,4 +1,30 @@
 <?php
+/**
+ * MIT License
+ * Copyright (c) 2023 Yowpay - Peer to Peer SEPA Payments made easy
+
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ *
+ * @author   YowPay SARL
+ * @copyright  YowPay SARL
+ * @license  MIT License
+ */
 require_once _PS_MODULE_DIR_ . 'yowpayment/vendor/autoload.php';
 
 if (!defined('_PS_VERSION_')) {
@@ -8,7 +34,6 @@ if (!defined('_PS_VERSION_')) {
 use PrestaShop\PrestaShop\Core\Payment\PaymentOption;
 use YowPayment\Services\YowTransaction\YowConfigFormService;
 use YowPayment\Services\YowTransaction\YowTransactionService;
-
 
 class YowPayment extends PaymentModule
 {
@@ -20,16 +45,13 @@ class YowPayment extends PaymentModule
 
     public function __construct()
     {
-        global $kernel;//Try to get global kernel
-
         $this->module_key = '69043e926f5867f43aa03604b9dfb670';
-
         $this->name = 'yowpayment';
         $this->tab = 'payments_gateways';
         $this->version = '1.0.2';
-        $this->ps_versions_compliancy = array('min' => '1.7', 'max' => _PS_VERSION_);
+        $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
         $this->author = 'YowPay';
-        $this->controllers = array('validation', 'hook', 'success', 'cancel');
+        $this->controllers = ['validation', 'hook', 'success', 'cancel'];
         $this->is_eu_compatible = 1;
         $this->currencies = true;
         $this->currencies_mode = 'checkbox';
@@ -45,13 +67,7 @@ class YowPayment extends PaymentModule
             $this->warning = $this->l('No currency has been set for this module.');
         }
 
-        if(!$kernel) {//If it's null try to get instance to get the container and to pass to YowConfigFormService(this is done to support old prestaShop)
-            require_once _PS_ROOT_DIR_.'/app/AppKernel.php';
-            $kernel = new \AppKernel('prod', false);
-            $kernel->boot();
-        }
-
-        $this->yowConfigFormService = new YowConfigFormService($kernel->getContainer(), $this);
+        $this->yowConfigFormService = new YowConfigFormService($this);
         $this->yowTransactionService = new YowTransactionService();
     }
 
@@ -63,42 +79,51 @@ class YowPayment extends PaymentModule
     public function install()
     {
         if (!parent::install()) {
-            PrestaShopLogger::addLog("Failed to install module");
+            PrestaShopLogger::addLog('Failed to install module');
+
             return false;
         }
         if (!$this->registerHook('displayPaymentReturn')) {
-            PrestaShopLogger::addLog("Failed to register displayPaymentReturn hook");
+            PrestaShopLogger::addLog('Failed to register displayPaymentReturn hook');
+
             return false;
         }
         if (!$this->registerHook('paymentOptions')) {
-            PrestaShopLogger::addLog("Failed to register paymentOptions hook");
+            PrestaShopLogger::addLog('Failed to register paymentOptions hook');
+
             return false;
         }
         if (!$this->registerHook('displayBackOfficeHeader')) {
-            PrestaShopLogger::addLog("Failed to register displayBackOfficeHeader hook");
+            PrestaShopLogger::addLog('Failed to register displayBackOfficeHeader hook');
+
             return false;
         }
         if (!$this->registerHook('actionCartUpdateQuantityBefore')) {
-            PrestaShopLogger::addLog("Failed to register actionCartUpdateQuantityBefore hook");
+            PrestaShopLogger::addLog('Failed to register actionCartUpdateQuantityBefore hook');
+
             return false;
         }
-        if (version_compare(_PS_VERSION_, '1.7.7.0', '<') ) {
+        if (version_compare(_PS_VERSION_, '1.7.7.0', '<')) {
             if (!$this->registerHook('actionFrontControllerAfterInit')) {
-                PrestaShopLogger::addLog("Failed to register actionFrontControllerAfterInit hook");
+                PrestaShopLogger::addLog('Failed to register actionFrontControllerAfterInit hook');
+
                 return false;
             }
         } else {
             if (!$this->registerHook('actionFrontControllerInitAfter')) {
-                PrestaShopLogger::addLog("Failed to register actionFrontControllerInitAfter hook");
+                PrestaShopLogger::addLog('Failed to register actionFrontControllerInitAfter hook');
+
                 return false;
             }
         }
         if (!$this->createTables()) {
-            PrestaShopLogger::addLog("Failed to create yow payment necessary tables");
+            PrestaShopLogger::addLog('Failed to create yow payment necessary tables');
+
             return false;
         }
         if (!$this->addOrderState()) {
-            PrestaShopLogger::addLog("Failed to create yow payment order status");
+            PrestaShopLogger::addLog('Failed to create yow payment order status');
+
             return false;
         }
 
@@ -111,44 +136,51 @@ class YowPayment extends PaymentModule
      * Actions performed while uninstalling module
      *
      * @param bool $keep
+     *
      * @return bool
      */
     public function uninstall($keep = true)
     {
         if (!parent::uninstall()) {
-            PrestaShopLogger::addLog("Failed to uninstall Yow Payment module");
+            PrestaShopLogger::addLog('Failed to uninstall Yow Payment module');
+
             return false;
         }
         if (!$keep) {
             if (!$this->deleteTables()) {
-                PrestaShopLogger::addLog("Failed to delete Yow Payment tables");
+                PrestaShopLogger::addLog('Failed to delete Yow Payment tables');
+
                 return false;
             }
         }
         if (!$this->unregisterHook('displayPaymentReturn')) {
-            PrestaShopLogger::addLog("Failed to unregister displayPaymentReturn hook");
+            PrestaShopLogger::addLog('Failed to unregister displayPaymentReturn hook');
+
             return false;
         }
         if (!$this->unregisterHook('paymentOptions')) {
-            PrestaShopLogger::addLog("Failed to unregister paymentOptions hook");
+            PrestaShopLogger::addLog('Failed to unregister paymentOptions hook');
+
             return false;
         }
         if (!$this->unregisterHook('displayBackOfficeHeader')) {
-            PrestaShopLogger::addLog("Failed to unregister displayBackOfficeHeader hook");
+            PrestaShopLogger::addLog('Failed to unregister displayBackOfficeHeader hook');
+
             return false;
         }
-        if (version_compare(_PS_VERSION_, '1.7.7.0', '<') ) {
+        if (version_compare(_PS_VERSION_, '1.7.7.0', '<')) {
             if (!$this->unregisterHook('actionFrontControllerAfterInit')) {
-                PrestaShopLogger::addLog("Failed to register actionFrontControllerAfterInit hook");
+                PrestaShopLogger::addLog('Failed to register actionFrontControllerAfterInit hook');
+
                 return false;
             }
         } else {
             if (!$this->unregisterHook('actionFrontControllerInitAfter')) {
-                PrestaShopLogger::addLog("Failed to register actionFrontControllerInitAfter hook");
+                PrestaShopLogger::addLog('Failed to register actionFrontControllerInitAfter hook');
+
                 return false;
             }
         }
-
 
         return true;
     }
@@ -162,7 +194,6 @@ class YowPayment extends PaymentModule
     {
         $this->context->controller->addJS($this->_path . 'views/js/yowpay.js');
         $this->_html = '';
-
 
         if (Tools::isSubmit('btnSubmit')) {
             $this->postValidationGeneralSettings();
@@ -205,10 +236,11 @@ class YowPayment extends PaymentModule
                 'swift' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_SWIFT')) ? Configuration::get('CHEQUE_APP_ACCOUNT_SWIFT') : 'N\A',
                 'expirationTime' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME')) ? Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME') : 'N\A',
                 'remainingTime' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME')) ? Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME') : 'N\A',
-                'accountStatus' => Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_STATUS')
+                'accountStatus' => Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_STATUS'),
             ]);
 
-            echo $this->displayBankConnection();exit;
+            echo $this->displayBankConnection();
+            exit;
         }
 
         $this->_html .= $this->displayCheck();
@@ -248,7 +280,6 @@ class YowPayment extends PaymentModule
      */
     public function hookDisplayPaymentReturn()
     {
-
     }
 
     /**
@@ -260,19 +291,19 @@ class YowPayment extends PaymentModule
      */
     public function hookPaymentReturn()
     {
-
     }
 
     /**
      * We register this hook to recover the cart in the order page when the payment is not confirmed
      *
      * @param $params
+     *
      * @return void
      */
     public function hookActionFrontControllerInitAfter($params)
     {
         if (get_class($params['controller']) === 'OrderController') {
-            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header('Cache-Control: no-store, no-cache, must-revalidate');
             $this->cartConversion();
         }
     }
@@ -284,11 +315,11 @@ class YowPayment extends PaymentModule
      */
     public function hookActionFrontControllerAfterInit()
     {
-        $orderLink = explode('/', $_SERVER["REQUEST_URI"]);
-        $isOrderPage = count($orderLink) > 0 && isset($orderLink[count($orderLink) - 1]) &&  $orderLink[count($orderLink) - 1] === 'order';
+        $orderLink = explode('/', $_SERVER['REQUEST_URI']);
+        $isOrderPage = count($orderLink) > 0 && isset($orderLink[count($orderLink) - 1]) && $orderLink[count($orderLink) - 1] === 'order';
 
         if ($isOrderPage) {
-            header("Cache-Control: no-store, no-cache, must-revalidate");
+            header('Cache-Control: no-store, no-cache, must-revalidate');
             $this->cartConversion();
         }
     }
@@ -341,9 +372,7 @@ class YowPayment extends PaymentModule
             $this->context->cookie->wentToYp = false;
             Tools::redirect($conversionStatus['redirectUrl']);
         }
-
     }
-
 
     /**
      * Renders settings forms
@@ -398,17 +427,18 @@ class YowPayment extends PaymentModule
 
     /**
      * @return PaymentOption
+     *
      * @throws SmartyException
      */
     private function getYowPaymentOption()
     {
         $yowPaymentOption = new PaymentOption();
         $yowPaymentOption->setCallToActionText(Configuration::get('CHEQUE_APP_CHECKOUT_TITLE', $this->context->language->id));
-        $yowPaymentOption->setAction($this->context->link->getModuleLink($this->name, 'validation', array(), true));
+        $yowPaymentOption->setAction($this->context->link->getModuleLink($this->name, 'validation', [], true));
 
         $this->context->smarty->assign([
             'paymentOptionDetails' => Configuration::get('CHEQUE_APP_CHECKOUT_DESCRIPTION', $this->context->language->id) ?: '',
-            'displayFullExplanation' => Configuration::get('CHEQUE_APP_FULL_EXPLANATION')
+            'displayFullExplanation' => Configuration::get('CHEQUE_APP_FULL_EXPLANATION'),
         ]);
 
         $yowPaymentOption->setAdditionalInformation($this->context->smarty->fetch('module:yowpayment/views/templates/front/payment_infos.tpl'));
@@ -445,7 +475,6 @@ class YowPayment extends PaymentModule
         return $configFields;
     }
 
-
     /**
      * Validate general settings form
      *
@@ -457,10 +486,10 @@ class YowPayment extends PaymentModule
 
         foreach ($languages as $language) {
             if (Tools::isEmpty(Tools::getValue('CHEQUE_APP_CHECKOUT_TITLE_' . $language['id_lang']))) {
-                $this->_postErrors[] = $this->l("The \"Title\" field is required for language " . $language['iso_code']);
+                $this->_postErrors[] = $this->l('The "Title" field is required for language ' . $language['iso_code']);
             }
             if (Tools::isEmpty(Tools::getValue('CHEQUE_APP_CHECKOUT_DESCRIPTION_' . $language['id_lang']))) {
-                $this->_postErrors[] = $this->l("The \"Description\" field is required for language " . $language['iso_code']);
+                $this->_postErrors[] = $this->l('The "Description" field is required for language ' . $language['iso_code']);
             }
         }
 
@@ -505,6 +534,14 @@ class YowPayment extends PaymentModule
      */
     private function displayBankConnection()
     {
+        $accountStatus = Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_STATUS');
+
+        $friendlyAccountStatus = strtoupper(str_replace('_', ' ', $accountStatus));
+
+        if ($accountStatus == 'active') {
+            $friendlyAccountStatus = YowTransactionService::ACCOUNT_STATUS_CONNECTED;
+        }
+
         $this->smarty->assign([
             'url' => $this->context->link->getAdminLink('AdminModules', false) . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name,
             'accountOwner' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_OWNER')) ? Configuration::get('CHEQUE_APP_ACCOUNT_OWNER') : 'N\A',
@@ -512,7 +549,7 @@ class YowPayment extends PaymentModule
             'swift' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_SWIFT')) ? Configuration::get('CHEQUE_APP_ACCOUNT_SWIFT') : 'N\A',
             'expirationTime' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME')) ? Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME') : 'N\A',
             'remainingTime' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME')) ? Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME') : 'N\A',
-            'accountStatus' => Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_STATUS')
+            'accountStatus' => $friendlyAccountStatus,
         ]);
 
         return $this->display(__FILE__, './views/templates/hook/connection.tpl');
@@ -522,17 +559,18 @@ class YowPayment extends PaymentModule
      * Returns helper form object, which is used to render forms on module config page
      *
      * @return HelperForm
+     *
      * @throws PrestaShopDatabaseException
      * @throws PrestaShopException
      */
     private function getHelperForm()
     {
-        $lang = new Language((int)Configuration::get('PS_LANG_DEFAULT'));
+        $lang = new Language((int) Configuration::get('PS_LANG_DEFAULT'));
 
         $helper = new HelperForm();
 
         $helper->show_toolbar = false;
-        $helper->id = (int)Tools::getValue('id_carrier');
+        $helper->id = (int) Tools::getValue('id_carrier');
         $helper->default_form_language = $lang->id;
         $helper->identifier = $this->identifier;
         $helper->currentIndex = $this->context->link->getAdminLink('AdminModules', false) . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name;
@@ -588,8 +626,9 @@ class YowPayment extends PaymentModule
             $order_state->module_name = $this->name;
             try {
                 $order_state->add();
-            }catch (PrestaShopDatabaseException|PrestaShopException $e) {
-                PrestaShopLogger::addLog("Failed to add the yowpay order state");
+            } catch (PrestaShopDatabaseException|PrestaShopException $e) {
+                PrestaShopLogger::addLog('Failed to add the yowpay order state');
+
                 return false;
             }
 
@@ -605,5 +644,4 @@ class YowPayment extends PaymentModule
 
         return true;
     }
-
 }

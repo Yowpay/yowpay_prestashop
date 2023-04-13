@@ -1,4 +1,5 @@
-{**
+<?php
+/**
  * MIT License
  * Copyright (c) 2023 Yowpay - Peer to Peer SEPA Payments made easy
 
@@ -23,10 +24,13 @@
  * @author   YowPay SARL
  * @copyright  YowPay SARL
  * @license  MIT License
- *}
+ */
+header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
+header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
 
-<p>{$paymentOptionDetails}</p>
-{if $displayFullExplanation}
-    {include file="module:yowpayment/views/templates/hook/payment_explanation.tpl"}
-{/if}
+header('Cache-Control: no-store, no-cache, must-revalidate');
+header('Cache-Control: post-check=0, pre-check=0', false);
+header('Pragma: no-cache');
 
+header('Location: ../');
+exit;
