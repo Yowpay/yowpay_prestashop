@@ -8,6 +8,7 @@ $_MODULE['<{yowpayment}prestashop>yowpayment_876f23178c29dc2552c0b48bf23cd9bd'] 
 $_MODULE['<{yowpayment}prestashop>yowpayment_a02758d758e8bec77a33d7f392eb3f8a'] = 'aucune devise configurée pour le module';
 $_MODULE['<{yowpayment}prestashop>yowpayment_035ee48d916f648addc4c863202a7fae'] = 'une erreur est intervenues lors de la connection avec votre banque';
 $_MODULE['<{yowpayment}prestashop>yowpayment_71ba3dd774d9a330339764f87936d42d'] = 'le champ \"enabled\" est requis';
+$_MODULE['<{yowpayment}prestashop>yowpayment_9969cb10b6f260ef5febc320062f57fa'] = 'le champ \"keep credentials\" est requis';
 $_MODULE['<{yowpayment}prestashop>yowpayment_5216c3f8fe495b556661a939a62597a6'] = 'le champ \"explanation\" est requis';
 $_MODULE['<{yowpayment}prestashop>yowpayment_7efe03307692a513d9e8d53386b31696'] = 'le champ \"app secret\" est requis';
 $_MODULE['<{yowpayment}prestashop>yowpayment_ab0a0e73c37b18dea9754e21b8de8c15'] = 'le champ \"app token \" est requis';
@@ -19,6 +20,7 @@ $_MODULE['<{yowpayment}prestashop>yowconfigformservice_33b459ff0eba001cf8b8b6eba
 $_MODULE['<{yowpayment}prestashop>yowconfigformservice_0cf90b1150f11098e3cb193e04c41b68'] = 'Ceci contrôle si le module \"Pay with SEPA Insant Transfer - by YowPay\" est activés dans la liste des méthodes de paiement de Prestashop';
 $_MODULE['<{yowpayment}prestashop>yowconfigformservice_93cba07454f06a4a960172bbd6e2a435'] = 'Oui';
 $_MODULE['<{yowpayment}prestashop>yowconfigformservice_bafd7322c6e97d25b6299b5d6fe8920b'] = 'Non';
+$_MODULE['<{yowpayment}prestashop>yowconfigformservice_a24b1ccdafe270cb9ca8424792ccb234'] = ' Supprimer toutes les données lors de la désinstallation (opération irréversible)';
 $_MODULE['<{yowpayment}prestashop>yowconfigformservice_b78a3223503896721cca1303f776159b'] = 'Titre';
 $_MODULE['<{yowpayment}prestashop>yowconfigformservice_d96fea7cff20a7d50d5e68908ef8843d'] = 'Ceci contrôle le titre visible par le client durant passage à la caisse';
 $_MODULE['<{yowpayment}prestashop>yowconfigformservice_b5a7adde1af5c87d7fd797b6245c2a39'] = 'Description';

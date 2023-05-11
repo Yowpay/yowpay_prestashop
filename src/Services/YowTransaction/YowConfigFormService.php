@@ -48,6 +48,7 @@ class YowConfigFormService
     public function postProcessGeneralSettings()
     {
         \Configuration::updateValue('CHEQUE_APP_PLUGIN_ENABLED', \Tools::getValue('CHEQUE_APP_PLUGIN_ENABLED'));
+        \Configuration::updateValue('CHEQUE_APP_DELETE_CREDENTIALS', \Tools::getValue('CHEQUE_APP_DELETE_CREDENTIALS'));
 
         $languages = \Language::getLanguages();
         $values = [];
@@ -165,6 +166,24 @@ class YowConfigFormService
                             ],
                             [
                                 'id' => 'plugin_disabled',
+                                'value' => 0,
+                                'label' => $this->module->l('No'),
+                            ],
+                        ],
+                    ],
+                    [
+                        'type' => 'switch',
+                        'label' => $this->module->l('Delete all data while uninstalling plugin (irreversible operation)'),
+                        'name' => 'CHEQUE_APP_DELETE_CREDENTIALS',
+                        'required' => true,
+                        'values' => [
+                            [
+                                'id' => 'remove_credentials',
+                                'value' => 1,
+                                'label' => $this->module->l('Yes'),
+                            ],
+                            [
+                                'id' => 'keep_credentials',
                                 'value' => 0,
                                 'label' => $this->module->l('No'),
                             ],

@@ -27,7 +27,7 @@
 <div class="panel" id="banking-connection-response-container">
     <div class="panel-heading">{l s="Open Banking Connection" mod='yowpayment'}</div>
     <div class="container" id="banking-connection" data-remaining-time="{$remainingTime}" data-account-status="{$accountStatus}" data-url="{$url}">
-        {if $accountStatus == 'not_provided'}
+        {if $accountStatus == 'NOT PROVIDED'}
             <label class="control-label">{l s="No Bank data was provided, please, go to your yowpay account and add it." mod='yowpayment'}</label>
         {else}
             <div class="account-information">

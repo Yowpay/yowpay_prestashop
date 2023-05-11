@@ -43,12 +43,24 @@ class YowPayment extends PaymentModule
     /** @var YowTransactionService */
     private $yowTransactionService;
 
+    /** @var string[] */
+    private $deletableConfigNames = [
+        'CHEQUE_APP_SECRET',
+        'CHEQUE_APP_TOKEN',
+        'CHEQUE_APP_ACCOUNT_OWNER',
+        'CHEQUE_APP_ACCOUNT_IBAN',
+        'CHEQUE_APP_ACCOUNT_SWIFT',
+        'CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME',
+        'CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME',
+        'CHEQUE_APP_ACCOUNT_BANKING_STATUS',
+    ];
+
     public function __construct()
     {
         $this->module_key = '69043e926f5867f43aa03604b9dfb670';
         $this->name = 'yowpayment';
         $this->tab = 'payments_gateways';
-        $this->version = '1.0.2';
+        $this->version = '1.0.3';
         $this->ps_versions_compliancy = ['min' => '1.7', 'max' => _PS_VERSION_];
         $this->author = 'YowPay';
         $this->controllers = ['validation', 'hook', 'success', 'cancel'];
@@ -181,6 +193,15 @@ class YowPayment extends PaymentModule
                 return false;
             }
         }
+        if (Configuration::get('CHEQUE_APP_DELETE_CREDENTIALS') === '1') {
+            foreach ($this->deletableConfigNames as $deletableConfigName) {
+                if (!Configuration::deleteByName($deletableConfigName)) {
+                    PrestaShopLogger::addLog("Failed to delete $deletableConfigName");
+
+                    return false;
+                }
+            }
+        }
 
         return true;
     }
@@ -228,16 +249,6 @@ class YowPayment extends PaymentModule
             if (!$this->yowConfigFormService->getAccountConnection()) {
                 $this->_html .= $this->displayError($this->l('There was an error while connecting to bank account'));
             }
-
-            $this->smarty->assign([
-                'url' => $this->context->link->getAdminLink('AdminModules', false) . '&token=' . Tools::getAdminTokenLite('AdminModules') . '&configure=' . $this->name . '&tab_module=' . $this->tab . '&module_name=' . $this->name,
-                'accountOwner' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_OWNER')) ? Configuration::get('CHEQUE_APP_ACCOUNT_OWNER') : 'N\A',
-                'iban' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_IBAN')) ? Configuration::get('CHEQUE_APP_ACCOUNT_IBAN') : 'N\A',
-                'swift' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_SWIFT')) ? Configuration::get('CHEQUE_APP_ACCOUNT_SWIFT') : 'N\A',
-                'expirationTime' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME')) ? Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_EXPIRATION_TIME') : 'N\A',
-                'remainingTime' => !empty(Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME')) ? Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_REMAINING_TIME') : 'N\A',
-                'accountStatus' => Configuration::get('CHEQUE_APP_ACCOUNT_BANKING_STATUS'),
-            ]);
 
             echo $this->displayBankConnection();
             exit;
@@ -457,6 +468,7 @@ class YowPayment extends PaymentModule
             'CHEQUE_APP_SECRET' => Tools::getValue('CHEQUE_APP_SECRET', Configuration::get('CHEQUE_APP_SECRET')),
             'CHEQUE_APP_TOKEN' => Tools::getValue('CHEQUE_APP_TOKEN', Configuration::get('CHEQUE_APP_TOKEN')),
             'CHEQUE_APP_PLUGIN_ENABLED' => Tools::getValue('CHEQUE_APP_PLUGIN_ENABLED', Configuration::get('CHEQUE_APP_PLUGIN_ENABLED')),
+            'CHEQUE_APP_DELETE_CREDENTIALS' => Tools::getValue('CHEQUE_APP_DELETE_CREDENTIALS', Configuration::get('CHEQUE_APP_DELETE_CREDENTIALS')),
             'CHEQUE_APP_FULL_EXPLANATION' => Tools::getValue('CHEQUE_APP_FULL_EXPLANATION', Configuration::get('CHEQUE_APP_FULL_EXPLANATION')),
             'CHEQUE_APP_ACCOUNT_OWNER' => Configuration::get('CHEQUE_APP_FULL_EXPLANATION'),
             'CHEQUE_APP_ACCOUNT_IBAN' => Configuration::get('CHEQUE_APP_ACCOUNT_IBAN'),
@@ -495,6 +507,10 @@ class YowPayment extends PaymentModule
 
         if (Tools::getValue('CHEQUE_APP_PLUGIN_ENABLED') === false) {
             $this->_postErrors[] = $this->l('The "Enabled" field is required.');
+        }
+
+        if (Tools::getValue('CHEQUE_APP_DELETE_CREDENTIALS') === false) {
+            $this->_postErrors[] = $this->l('The "Keep Credentials" field is required.');
         }
 
         if (Tools::getValue('CHEQUE_APP_FULL_EXPLANATION') === false) {
@@ -603,7 +619,8 @@ class YowPayment extends PaymentModule
         Configuration::updateValue('CHEQUE_APP_CHECKOUT_DESCRIPTION', $values['CHEQUE_APP_CHECKOUT_DESCRIPTION']);
         Configuration::updateValue('CHEQUE_APP_PLUGIN_ENABLED', '1');
         Configuration::updateValue('CHEQUE_APP_FULL_EXPLANATION', '1');
-        Configuration::updateValue('CHEQUE_APP_ACCOUNT_BANKING_STATUS', 'not_connected');
+        Configuration::updateValue('CHEQUE_APP_DELETE_CREDENTIALS', '0');
+        Configuration::updateValue('CHEQUE_APP_ACCOUNT_BANKING_STATUS', 'not_provided');
     }
 
     /**
